@@ -1,0 +1,45 @@
+type: object
+required:
+  - order_uuid
+  - user_uuid
+  - part_uuids
+  - total_price
+  - transaction_uuid
+  - payment_method
+  - status
+properties:
+  order_uuid:
+    type: string
+    description: Id заказа
+    minLength: 1
+    maxLength: 40
+    example: "550e8400-e29b-41d4-a716-446655440003"
+  user_uuid:
+    type: string
+    description: Id заказчика
+    minLength: 1
+    maxLength: 40
+    example: "550e8400-e29b-41d4-a716-446955440002"
+  part_uuids:
+    type: array
+    description: Id деталей
+    items:
+      type: string
+      minLength: 1
+      maxLength: 40
+      example: ["550e8400-e29b-41d4-a716-446655442001", "350e8400-e29b-41d4-a716-446655440011"]
+  total_price:
+    type: number
+    format: float
+    description: Стоимость заказа
+    example: 25.5
+  transaction_uuid:
+    type: string
+    description: Id транзакции
+    minLength: 1
+    maxLength: 40
+    example: "550e8400-e29b-41d4-a716-446655440003"
+  payment_method:
+    $ref: ./enums/payment_method.yaml
+  status:
+    $ref: ./enums/order_status.yaml
