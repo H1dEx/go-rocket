@@ -36,16 +36,16 @@ enum Category {
 // Dimensions размеры детали Part
 message Dimensions {
     // length Длина в см
-    double length = 1;
+    uint64 length = 1;
 
     // width Ширина в см
-    double width = 2;
+    uint64 width = 2;
 
     // height Высота в см
-    double height = 3;
+    uint64 height = 3;
 
     // weight Вес в к
-    double weight = 4;
+    uint64 weight = 4;
 }
 
 // Manufacturer информация о производителе детали Part
@@ -86,7 +86,7 @@ message Part {
     string description = 3;
 
     // price Цена за единицу
-    int64 price = 4;
+    uint64 price = 4;
     
     // stock_quantity Количество на складе
     int64 stock_quantity = 5;

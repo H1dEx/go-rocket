@@ -87,13 +87,13 @@ func (Category) EnumDescriptor() ([]byte, []int) {
 type Dimensions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// length Длина в см
-	Length float64 `protobuf:"fixed64,1,opt,name=length,proto3" json:"length,omitempty"`
+	Length uint64 `protobuf:"varint,1,opt,name=length,proto3" json:"length,omitempty"`
 	// width Ширина в см
-	Width float64 `protobuf:"fixed64,2,opt,name=width,proto3" json:"width,omitempty"`
+	Width uint64 `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`
 	// height Высота в см
-	Height float64 `protobuf:"fixed64,3,opt,name=height,proto3" json:"height,omitempty"`
+	Height uint64 `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
 	// weight Вес в к
-	Weight        float64 `protobuf:"fixed64,4,opt,name=weight,proto3" json:"weight,omitempty"`
+	Weight        uint64 `protobuf:"varint,4,opt,name=weight,proto3" json:"weight,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -128,28 +128,28 @@ func (*Dimensions) Descriptor() ([]byte, []int) {
 	return file_inventory_v1_inventory_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Dimensions) GetLength() float64 {
+func (x *Dimensions) GetLength() uint64 {
 	if x != nil {
 		return x.Length
 	}
 	return 0
 }
 
-func (x *Dimensions) GetWidth() float64 {
+func (x *Dimensions) GetWidth() uint64 {
 	if x != nil {
 		return x.Width
 	}
 	return 0
 }
 
-func (x *Dimensions) GetHeight() float64 {
+func (x *Dimensions) GetHeight() uint64 {
 	if x != nil {
 		return x.Height
 	}
 	return 0
 }
 
-func (x *Dimensions) GetWeight() float64 {
+func (x *Dimensions) GetWeight() uint64 {
 	if x != nil {
 		return x.Weight
 	}
@@ -349,7 +349,7 @@ type Part struct {
 	// description Описание детали
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// price Цена за единицу
-	Price int64 `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`
+	Price uint64 `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`
 	// stock_quantity Количество на складе
 	StockQuantity int64 `protobuf:"varint,5,opt,name=stock_quantity,json=stockQuantity,proto3" json:"stock_quantity,omitempty"`
 	// category Категория
@@ -421,7 +421,7 @@ func (x *Part) GetDescription() string {
 	return ""
 }
 
-func (x *Part) GetPrice() int64 {
+func (x *Part) GetPrice() uint64 {
 	if x != nil {
 		return x.Price
 	}
@@ -757,10 +757,10 @@ const file_inventory_v1_inventory_proto_rawDesc = "" +
 	"\x1cinventory/v1/inventory.proto\x12\finventory.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"j\n" +
 	"\n" +
 	"Dimensions\x12\x16\n" +
-	"\x06length\x18\x01 \x01(\x01R\x06length\x12\x14\n" +
-	"\x05width\x18\x02 \x01(\x01R\x05width\x12\x16\n" +
-	"\x06height\x18\x03 \x01(\x01R\x06height\x12\x16\n" +
-	"\x06weight\x18\x04 \x01(\x01R\x06weight\"V\n" +
+	"\x06length\x18\x01 \x01(\x04R\x06length\x12\x14\n" +
+	"\x05width\x18\x02 \x01(\x04R\x05width\x12\x16\n" +
+	"\x06height\x18\x03 \x01(\x04R\x06height\x12\x16\n" +
+	"\x06weight\x18\x04 \x01(\x04R\x06weight\"V\n" +
 	"\fManufacturer\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\acountry\x18\x02 \x01(\tR\acountry\x12\x18\n" +
@@ -778,7 +778,7 @@ const file_inventory_v1_inventory_proto_rawDesc = "" +
 	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x14\n" +
-	"\x05price\x18\x04 \x01(\x03R\x05price\x12%\n" +
+	"\x05price\x18\x04 \x01(\x04R\x05price\x12%\n" +
 	"\x0estock_quantity\x18\x05 \x01(\x03R\rstockQuantity\x122\n" +
 	"\bcategory\x18\x06 \x01(\x0e2\x16.inventory.v1.CategoryR\bcategory\x128\n" +
 	"\n" +
