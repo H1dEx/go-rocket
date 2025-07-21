@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net"
@@ -9,37 +8,15 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/google/uuid"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 
+	paymentApiV1 "github.com/H1dEx/go-rocket/payment/internal/api/payment/v1"
+	paymentService "github.com/H1dEx/go-rocket/payment/internal/service/payment"
 	paymentV1 "github.com/H1dEx/go-rocket/shared/pkg/proto/payment/v1"
 )
 
 const grpcPort = 50052
-
-type paymentService struct {
-	paymentV1.UnimplementedPaymentServiceServer
-}
-
-func (p *paymentService) PayOrder(ctx context.Context, req *paymentV1.PayOrderRequest) (*paymentV1.PayOrderResponse, error) {
-	if req.GetOrderUuid() == "" {
-		return nil, status.Error(codes.InvalidArgument, "field order_uuid is empty")
-	}
-	if req.GetPaymentMethod() == paymentV1.PaymentMethod_PAYMENT_METHOD_UNKNOWN {
-		return nil, status.Error(codes.InvalidArgument, "field payment_metod is unknown")
-	}
-	if req.GetUserUuid() == "" {
-		return nil, status.Error(codes.InvalidArgument, "field user_uuid is empty")
-	}
-
-	transactionUUID := uuid.NewString()
-	log.Printf("Оплата прошла успешно, transaction_uuid: %s", transactionUUID)
-
-	return &paymentV1.PayOrderResponse{TransactionUuid: transactionUUID}, nil
-}
 
 func main() {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
@@ -53,8 +30,11 @@ func main() {
 		}
 	}()
 	s := grpc.NewServer()
-	service := &paymentService{}
-	paymentV1.RegisterPaymentServiceServer(s, service)
+
+	service := paymentService.NewService()
+	api := paymentApiV1.NewApi(service)
+
+	paymentV1.RegisterPaymentServiceServer(s, api)
 	reflection.Register(s)
 	go func() {
 		log.Printf("🚀 gRPC server listening on %d\n", grpcPort)

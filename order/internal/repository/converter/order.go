@@ -82,3 +82,9 @@ func OrderStatusToModel(status repoModel.OrderStatus) model.OrderStatus {
 		return model.OrderStatusUnknown
 	}
 }
+
+func OrderCreateParamToModel() model.OrderCreateParam {
+	return model.OrderCreateParam{
+		
+	}
+}

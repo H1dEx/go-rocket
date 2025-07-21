@@ -8,7 +8,7 @@ import (
 	repoModel "github.com/H1dEx/go-rocket/order/internal/repository/model"
 )
 
-func (r *repository) CreateOrder(ctx context.Context, params model.OrderCreateParam) (model.Order, error) {
+func (r *repository) CreateOrder(ctx context.Context, params repoModel.OrderCreateParam) (model.Order, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	_, ok := r.orders[params.OrderUUID]

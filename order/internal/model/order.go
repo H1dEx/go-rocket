@@ -30,12 +30,12 @@ type Order struct {
 }
 
 type OrderCreateParam struct {
-	OrderUUID     string
 	UserUUID      string
 	PartUuids     []string
-	TotalPrice    float32
-	PaymentMethod PaymentMethod
-	Status        OrderStatus
+	// OrderUUID     string
+	// TotalPrice    float32
+	// PaymentMethod PaymentMethod
+	// Status        OrderStatus
 }
 
 type OrderUpdateParam struct {
