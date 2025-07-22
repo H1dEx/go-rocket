@@ -10,7 +10,7 @@ func (s *service) ListParts(ctx context.Context, filters model.FilterParts) ([]m
 	parts, err := s.repo.ListParts(ctx, filters)
 
 	if err != nil {
-		return []model.Part{}, nil
+		return []model.Part{}, err
 	}
 
 	return parts, nil
