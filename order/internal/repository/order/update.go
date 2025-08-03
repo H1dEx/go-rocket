@@ -2,23 +2,31 @@ package order
 
 import (
 	"context"
+	"log"
 
 	"github.com/H1dEx/go-rocket/order/internal/model"
-	"github.com/H1dEx/go-rocket/order/internal/repository/converter"
+	sq "github.com/Masterminds/squirrel"
 )
 
 func (r *repository) UpdateOrder(ctx context.Context, params model.OrderUpdateParam) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	order, ok := r.orders[params.OrderId]
+	builderUpdate := sq.Update("orders").
+		PlaceholderFormat(sq.Dollar).
+		Set("transactionUuid", params.TransactionUUID).
+		Set("status", params.Status).
+		Set("paymentMethod", params.PaymentMethod).
+		Where(sq.Eq{"orderUuid": params.OrderId})
 
-	if !ok {
-		return model.ErrOrderNotFound
+	query, args, err := builderUpdate.ToSql()
+	if err != nil {
+		log.Printf("failed to build query: %v\n", err)
+		return err
 	}
-	order.TransactionUUID = params.TransactionUUID
-	order.Status = converter.OrderStatusToRepoModel(params.Status)
-	order.PaymentMethod = converter.OrderPaymentMethodToRepoModel(params.PaymentMethod)
-	r.orders[params.OrderId] = order
+
+	_, err = r.pool.Exec(ctx, query, args...)
+	if err != nil {
+		log.Printf("failed to update note: %v\n", err)
+		return err
+	}
 
 	return nil
 }

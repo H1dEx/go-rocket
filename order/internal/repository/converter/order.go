@@ -7,25 +7,25 @@ import (
 
 func OrderToRepoModel(order model.Order) repoModel.Order {
 	return repoModel.Order{
-		OrderUUID: order.OrderUUID,
-		UserUUID: order.UserUUID,
-		PartUuids: order.PartUuids,
-		TotalPrice: order.TotalPrice,
+		OrderUUID:       order.OrderUUID,
+		UserUUID:        order.UserUUID,
+		PartUuids:       order.PartUuids,
+		TotalPrice:      order.TotalPrice,
 		TransactionUUID: order.TransactionUUID,
-		PaymentMethod: OrderPaymentMethodToRepoModel(order.PaymentMethod),
-		Status: OrderStatusToRepoModel(order.Status),
+		PaymentMethod:   OrderPaymentMethodToRepoModel(order.PaymentMethod),
+		Status:          OrderStatusToRepoModel(order.Status),
 	}
 }
 
 func OrderToModel(order repoModel.Order) model.Order {
 	return model.Order{
-		OrderUUID: order.OrderUUID,
-		UserUUID: order.UserUUID,
-		PartUuids: order.PartUuids,
-		TotalPrice: order.TotalPrice,
+		OrderUUID:       order.OrderUUID,
+		UserUUID:        order.UserUUID,
+		PartUuids:       order.PartUuids,
+		TotalPrice:      order.TotalPrice,
 		TransactionUUID: order.TransactionUUID,
-		PaymentMethod: OrderPaymentMethodToModel(order.PaymentMethod),
-		Status: OrderStatusToModel(order.Status),
+		PaymentMethod:   OrderPaymentMethodToModel(order.PaymentMethod),
+		Status:          OrderStatusToModel(order.Status),
 	}
 }
 func OrderPaymentMethodToRepoModel(method model.PaymentMethod) repoModel.PaymentMethod {
@@ -84,7 +84,32 @@ func OrderStatusToModel(status repoModel.OrderStatus) model.OrderStatus {
 }
 
 func OrderCreateParamToModel() model.OrderCreateParam {
-	return model.OrderCreateParam{
-		
+	return model.OrderCreateParam{}
+}
+
+func OrderPaymentMethodFromDb(paymentMethod string) repoModel.PaymentMethod {
+	switch paymentMethod {
+	case string(repoModel.PaymentMethodCard):
+		return repoModel.PaymentMethodCard
+	case string(repoModel.PaymentMethodCreditCard):
+		return repoModel.PaymentMethodCreditCard
+	case string(repoModel.PaymentMethodInvestorMoney):
+		return repoModel.PaymentMethodInvestorMoney
+	case string(repoModel.PaymentMethodSBP):
+		return repoModel.PaymentMethodSBP
+	default:
+		return repoModel.PaymentMethodUnknown
+	}
+}
+func OrderStatusFromDb(status string) repoModel.OrderStatus {
+	switch status {
+	case string(repoModel.OrderStatusPendingPayment):
+		return repoModel.OrderStatusPendingPayment
+	case string(repoModel.OrderStatusCancelled):
+		return repoModel.OrderStatusCancelled
+	case string(repoModel.OrderStatusPaid):
+		return repoModel.OrderStatusPaid
+	default:
+		return repoModel.OrderStatusUnknown
 	}
 }

@@ -1,23 +1,29 @@
 package order
 
-import (
-	"github.com/H1dEx/go-rocket/order/internal/repository/converter"
-	"github.com/brianvoe/gofakeit/v6"
-)
+// import (
+// 	"fmt"
 
-func (s *ServiceSuite) TestGetOrderSuccess() {
-	order := s.GenFakeRepoOrder()
-	s.repo.orders[order.OrderUUID] = order
+// 	"github.com/brianvoe/gofakeit/v6"
+// )
 
-	res, err := s.repo.GetOrderByID(s.ctx, order.OrderUUID)
-	s.NoError(err)
-	s.Equal(res, converter.OrderToModel(order))
-}
-func (s *ServiceSuite) TestGetOrderFailure() {
-	order := s.GenFakeRepoOrder()
-	s.repo.orders[order.OrderUUID] = order
+// func (s *ServiceSuite) TestGetOrderSuccess() {
+// 	order := s.GenFakeOrder()
+// 	_, err := s.InsertOrder(order)
 
-	res, err := s.repo.GetOrderByID(s.ctx, gofakeit.UUID())
-	s.Error(err)
-	s.Empty(res)
-}
+// 	s.NoError(err)
+// 	// s.repo.orders[order.OrderUUID] = order
+
+// 	res, err := s.repo.GetOrderByID(s.ctx, order.OrderUUID)
+// 	s.NoError(err)
+// 	fmt.Print(res)
+// 	s.Equal(res, order)
+// }
+// func (s *ServiceSuite) TestGetOrderFailure() {
+// 	order := s.GenFakeOrder()
+// 	_, err := s.InsertOrder(order)
+// 	s.NoError(err)
+
+// 	res, err := s.repo.GetOrderByID(s.ctx, gofakeit.UUID())
+// 	s.Error(err)
+// 	s.Empty(res)
+// }

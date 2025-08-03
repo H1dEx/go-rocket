@@ -1,19 +1,16 @@
 package order
 
 import (
-	"sync"
-
-	"github.com/H1dEx/go-rocket/order/internal/repository/model"
 	dfo "github.com/H1dEx/go-rocket/order/internal/repository"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 var _ dfo.OrderRepository = (*repository)(nil)
 type repository struct {
-	mu sync.RWMutex
-	orders map[string]model.Order
+	pool *pgxpool.Pool
 }
 
-func NewRepository() *repository {
+func NewRepository(pool *pgxpool.Pool) *repository {
 	return &repository{
-		orders: make(map[string]model.Order),
+		pool: pool,
 	}
 }

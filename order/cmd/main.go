@@ -14,6 +14,7 @@ import (
 	orderApi "github.com/H1dEx/go-rocket/order/internal/api/order/v1"
 	inventoryCli "github.com/H1dEx/go-rocket/order/internal/client/grpc/inventory/v1"
 	paymentCli "github.com/H1dEx/go-rocket/order/internal/client/grpc/payment/v1"
+	"github.com/H1dEx/go-rocket/order/internal/migrator"
 	orderRepo "github.com/H1dEx/go-rocket/order/internal/repository/order"
 	orderService "github.com/H1dEx/go-rocket/order/internal/service/order"
 	order_v1 "github.com/H1dEx/go-rocket/shared/pkg/openapi/order/v1"
@@ -22,6 +23,9 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -36,6 +40,31 @@ const (
 )
 
 func main() {
+	ctx := context.Background()
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Printf("Failed to read env file %v\n", err)
+		return
+	}
+
+	dbURI := os.Getenv("DB_URI")
+	pool, err := pgxpool.New(ctx, dbURI)
+	if err != nil {
+		log.Printf("failed to connect to database: %v\n", err)
+		return
+	}
+
+	defer pool.Close()
+
+	migrationsDir := os.Getenv("MIGRATIONS_DIR")
+	migratorRunner := migrator.NewMigrator(stdlib.OpenDB(*pool.Config().ConnConfig.Copy()), migrationsDir)
+
+	if err := migratorRunner.Up(); err != nil {
+		log.Printf("Ошибка миграции базы данных: %v\n", err)
+		return
+	}
+
 	paymentConn, err := grpc.NewClient(paymentAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect payment: %s", err.Error())
@@ -62,7 +91,7 @@ func main() {
 
 	inventoryClient := inventoryCli.NewClient(inventory_v1.NewInventoryServiceClient(inventoryConn))
 
-	storage := orderRepo.NewRepository()
+	storage := orderRepo.NewRepository(pool)
 	service := orderService.NewService(storage, inventoryClient, paymentClient)
 	api := orderApi.NewApi(service)
 	orderServer, err := order_v1.NewServer(api)
