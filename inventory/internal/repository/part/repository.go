@@ -1,32 +1,31 @@
 package part
 
 import (
-	"sync"
-
 	def "github.com/H1dEx/go-rocket/inventory/internal/repository"
-	"github.com/H1dEx/go-rocket/inventory/internal/repository/model"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var _ def.InventoryRepository = (*repository)(nil)
 
 type repository struct {
-	mu    sync.RWMutex
-	parts map[string]model.Part
+	collection *mongo.Collection
 }
 
-func NewRepository() *repository {
+func NewRepository(db *mongo.Database) *repository {
+	collection := db.Collection("parts")
+
 	r := &repository{
-		parts: make(map[string]model.Part),
+		collection,
 	}
-	r.parts["111"] = model.Part{
-		UUID:  "111",
-		Name:  "one",
-		Price: 100,
-	}
-	r.parts["222"] = model.Part{
-		UUID:  "222",
-		Name:  "two",
-		Price: 200,
-	}
+	// r.parts["111"] = model.Part{
+	// 	UUID:  "111",
+	// 	Name:  "one",
+	// 	Price: 100,
+	// }
+	// r.parts["222"] = model.Part{
+	// 	UUID:  "222",
+	// 	Name:  "two",
+	// 	Price: 200,
+	// }
 	return r
 }

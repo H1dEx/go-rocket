@@ -2,11 +2,13 @@ package part
 
 import (
 	"context"
+	"log"
 	"slices"
 
 	"github.com/H1dEx/go-rocket/inventory/internal/model"
 	"github.com/H1dEx/go-rocket/inventory/internal/repository/converter"
 	repoModel "github.com/H1dEx/go-rocket/inventory/internal/repository/model"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func validatePart(p *repoModel.Part, filters *model.FilterParts) bool {
@@ -51,11 +53,30 @@ func validatePart(p *repoModel.Part, filters *model.FilterParts) bool {
 	return true
 }
 
-func (r *repository) ListParts(context context.Context, filters model.FilterParts) ([]model.Part, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
+func (r *repository) ListParts(ctx context.Context, filters model.FilterParts) ([]model.Part, error) {
+	cursor, err := r.collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		cerr := cursor.Close(ctx)
+		if cerr != nil {
+			log.Printf("failed to close cursor: %v\n", cerr)
+		}
+	}()
+
+	var parts []repoModel.Part
+
+	err = cursor.All(ctx, &parts)
+
+	if err != nil {
+		return nil, err
+	}
+
 	var filteredParts []model.Part
-	for _, part := range r.parts {
+	for _, part := range parts {
 		if validatePart(&part, &filters) {
 			formatted := converter.PartToModel(part)
 			filteredParts = append(filteredParts, formatted)

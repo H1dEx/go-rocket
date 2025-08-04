@@ -18,7 +18,7 @@ type ServiceSuite struct {
 
 func (s *ServiceSuite) SetupTest() {
 	s.ctx = context.Background()
-	s.repo = NewRepository()
+	// s.repo = NewRepository()
 }
 
 func (s *ServiceSuite) TearDownTest() {
